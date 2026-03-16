@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Forum&family=Poppins:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-malon-cream text-malon-gray font-poppins antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-forum text-malon-dark;
+  }
+}
+
+@layer components {
+  .btn-gold {
+    @apply bg-malon-accent text-white px-8 py-3 rounded-sm transition-all duration-300 hover:opacity-90 active:scale-95 text-sm uppercase tracking-widest font-medium;
+  }
+
+  .nav-link {
+    @apply text-malon-dark/80 hover:text-malon-gold transition-colors duration-200 text-sm tracking-widest uppercase font-medium;
+  }
+}
