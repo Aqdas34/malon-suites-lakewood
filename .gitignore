@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Assets
+public/assets/images/
+public/assets/images-older/
