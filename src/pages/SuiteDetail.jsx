@@ -8,36 +8,51 @@ const SuiteDetail = () => {
   const { id } = useParams();
   
   const suitesData = {
-    'bellinger': {
+    'bellinger-st-suites': {
       name: "Bellinger Street Suites",
-      price: "$350.00",
-      description: "Experience refined comfort in the heart of Lakewood with this private hotel-style suite, designed for relaxation, convenience, and privacy. Perfect for simchas, family visits, business stays, or a quiet getaway.",
+      price: "$400.00",
+      description: "Experience refined comfort in the heart of Lakewood with this private hotel-style suite, designed for relaxation, convenience, and privacy.",
       images: [
-        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
-        "https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"
+        "/assets/images/SEV05322.jpg",
+        "/assets/images/SEV05372.jpg",
+        "/assets/images/Room-1@2x.jpg"
       ],
-      amenities: [
-        "Full Kitchenette", "Keurig Coffee Machine", "Spa-like Shower", "High-speed Wi-Fi", 
-        "Washer/Dryer", "Large Windows", "Memory Foam Mattress", "Premium Linens"
-      ]
+      amenities: ["Kitchenette", "Wi-Fi", "Coffee Machine", "Private Bath"]
     },
-    'laurel': {
+    'laurel-ave-suite': {
         name: "Laurel Ave. Suite",
-        price: "$295.00",
+        price: "$375.00",
         description: "A beautifully appointed suite with a modern touch. Perfectly situated for local living with all the comforts of a hotel.",
-        images: ["https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+        images: [
+          "/assets/images/SEV05327.jpg", 
+          "/assets/images/SEV05377.jpg",
+          "/assets/images/Room-3@2x.jpg"
+        ],
         amenities: ["Kitchenette", "Wi-Fi", "Coffee Machine", "Private Bath"]
     },
-    'miller': {
+    'miller-rd-suite': {
         name: "Miller Rd. Suite",
-        price: "$375.00",
+        price: "$425.00",
         description: "Our signature suite offering the ultimate in space and luxury. Designed for guests who demand the very best.",
-        images: ["https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"],
+        images: [
+          "/assets/images/SEV05337-1.jpg", 
+          "/assets/images/SEV05387.jpg",
+          "/assets/images/Room-4@2x.jpg"
+        ],
         amenities: ["Full Kitchen", "Wi-Fi", "Lounge Area", "Free Parking"]
     }
   };
 
-  const suite = suitesData[id] || suitesData['bellinger'];
+  const suite = suitesData[id] || suitesData['bellinger-st-suites'];
+
+  if (!suite) {
+    return (
+      <div className="pt-[150px] text-center">
+        <h2 className="text-3xl font-forum">Suite Not Found</h2>
+        <Link to="/hotel-search" className="text-malon-gold mt-4 inline-block">Back to Suites</Link>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-[150px]">
@@ -150,7 +165,7 @@ const SuiteDetail = () => {
                      </div>
                   </div>
 
-                  <button className="w-full bg-[#D9534F] text-white py-6 px-10 text-[13px] uppercase tracking-[.4em] font-bold hover:bg-[#c9302c] transition-all duration-500 shadow-lg">
+                  <button className="w-full bg-malon-primary text-white py-6 px-10 text-[13px] uppercase tracking-[.4em] font-bold hover:bg-malon-dark transition-all duration-500 shadow-lg">
                      Check Availability
                   </button>
                   

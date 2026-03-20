@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X, Search, Phone, Instagram, Facebook, Twitter, Youtube, Linkedin } from 'lucide-react';
-import logo from '../assets/logo.png';
+import SearchOverlay from './SearchOverlay';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,21 +26,21 @@ const Navbar = () => {
       >
         <div className="max-w-[1400px] mx-auto px-10 w-full flex justify-between items-center text-[11px] font-poppins font-medium tracking-wide">
           <div className="flex items-center space-x-2">
-            <Phone size={12} className="text-malon-accent" />
-            <a href="tel:908-946-2566" className="hover:text-malon-gold transition-colors">
+            <Phone size={12} className="text-malon-primary" />
+            <a href="tel:908-946-2566" className="hover:text-malon-primary transition-colors">
               908 - 94- MALON (62566)
             </a>
           </div>
           <div className="flex items-center space-x-4">
-             <div className="flex items-center space-x-3 text-[10px]">
-                <a href="#" className="hover:text-malon-gold transition-colors">Fb</a>
+              <div className="flex items-center space-x-3 text-[10px]">
+                <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" className="hover:text-malon-gold transition-colors">Fb</a>
                 <span>-</span>
-                <a href="#" className="hover:text-malon-gold transition-colors">In</a>
+                <a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" className="hover:text-malon-gold transition-colors">In</a>
                 <span>-</span>
-                <a href="#" className="hover:text-malon-gold transition-colors">Tw</a>
+                <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer" className="hover:text-malon-gold transition-colors">Tw</a>
                 <span>-</span>
-                <a href="#" className="hover:text-malon-gold transition-colors">Yt</a>
-             </div>
+                <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" className="hover:text-malon-gold transition-colors">Yt</a>
+              </div>
           </div>
         </div>
       </div>
@@ -56,7 +57,7 @@ const Navbar = () => {
           <div className="flex-1 flex justify-start">
              <Link to="/" className="cursor-pointer group">
                 <img 
-                  src={logo} 
+                  src="/assets/logo.png" 
                   alt="Malon Luxury Suites" 
                   className={`transition-all duration-500 object-contain ${
                     isScrolled ? 'h-[60px]' : 'h-[80px]'
@@ -71,15 +72,15 @@ const Navbar = () => {
               Home
               <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-malon-gold transition-all duration-300 group-hover:w-full"></span>
             </Link>
-            <Link to="/about" className="hover:text-malon-gold transition-colors relative group whitespace-nowrap">
+            <Link to="/about-us" className="hover:text-malon-gold transition-colors relative group whitespace-nowrap">
               About Us
               <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-malon-gold transition-all duration-300 group-hover:w-full"></span>
             </Link>
-            <Link to="/suites" className="hover:text-malon-gold transition-colors relative group whitespace-nowrap">
+            <Link to="/hotel-search" className="hover:text-malon-gold transition-colors relative group whitespace-nowrap">
               Malon Suites
               <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-malon-gold transition-all duration-300 group-hover:w-full"></span>
             </Link>
-            <Link to="/contact" className="hover:text-malon-gold transition-colors relative group whitespace-nowrap">
+            <Link to="/contact-us" className="hover:text-malon-gold transition-colors relative group whitespace-nowrap">
               Contact Us
               <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-malon-gold transition-all duration-300 group-hover:w-full"></span>
             </Link>
@@ -87,7 +88,10 @@ const Navbar = () => {
 
           {/* Right: Search & Mobile Menu */}
           <div className="flex-1 flex justify-end items-center">
-            <button className="text-malon-dark hover:text-malon-gold transition-colors p-2">
+            <button 
+              onClick={() => setIsSearchOpen(true)}
+              className="text-malon-dark hover:text-malon-gold transition-colors p-2"
+            >
               <Search size={20} strokeWidth={2} />
             </button>
             <button 
@@ -109,12 +113,17 @@ const Navbar = () => {
         } pt-[150px] lg:hidden`}>
           <div className="max-w-[1240px] mx-auto px-10 flex flex-col items-center space-y-8 uppercase tracking-[.3em] font-forum text-3xl">
             <Link to="/" className="hover:text-malon-gold transition-colors" onClick={() => setIsMenuOpen(false)}>Home</Link>
-            <Link to="/about" className="hover:text-malon-gold transition-colors" onClick={() => setIsMenuOpen(false)}>About Us</Link>
-            <Link to="/suites" className="hover:text-malon-gold transition-colors" onClick={() => setIsMenuOpen(false)}>Malon Suites</Link>
-            <Link to="/contact" className="hover:text-malon-gold transition-colors" onClick={() => setIsMenuOpen(false)}>Contact Us</Link>
+            <Link to="/about-us" className="hover:text-malon-gold transition-colors" onClick={() => setIsMenuOpen(false)}>About Us</Link>
+            <Link to="/hotel-search" className="hover:text-malon-gold transition-colors" onClick={() => setIsMenuOpen(false)}>Malon Suites</Link>
+            <Link to="/contact-us" className="hover:text-malon-gold transition-colors" onClick={() => setIsMenuOpen(false)}>Contact Us</Link>
           </div>
         </div>
       </nav>
+
+      <SearchOverlay 
+        isOpen={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
+      />
     </>
   );
 };

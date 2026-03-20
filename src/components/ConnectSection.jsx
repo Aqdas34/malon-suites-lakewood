@@ -35,7 +35,7 @@ const ConnectSection = () => {
           className="w-full lg:w-[52%] min-h-[500px] relative mt-12 lg:mt-0"
         >
           <img 
-            src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+            src="/assets/images/SEV05322.jpg" 
             alt="Malon Luxury Suite Interior" 
             className="w-full h-full object-cover shadow-2xl"
           />

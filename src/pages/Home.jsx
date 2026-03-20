@@ -11,19 +11,19 @@ import ConnectSection from '../components/ConnectSection'
 const Home = () => {
   const suites = [
     {
-      id: 'bellinger',
+      id: "bellinger-st-suites",
       name: "Bellinger Street Suites",
-      image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      image: "/assets/images/SEV05322.jpg",
     },
     {
-      id: 'laurel',
+      id: "laurel-ave-suite",
       name: "Laurel Avenue Suite",
-      image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      image: "/assets/images/SEV05327.jpg",
     },
     {
-      id: 'miller',
+      id: "miller-rd-suite",
       name: "Miller Rd. Suite",
-      image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      image: "/assets/images/SEV05337-1.jpg",
     }
   ];
 
@@ -33,7 +33,17 @@ const Home = () => {
       <BookingBar />
       
       {/* KNOW US Section */}
-      <section className="py-[150px] max-w-[1400px] mx-auto px-10 text-center">
+      <section className="py-[150px] max-w-[1400px] mx-auto px-10 text-center relative overflow-hidden">
+        {/* Background Art Icon Mask */}
+        <div 
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] opacity-[0.03] z-0 pointer-events-none"
+          style={{
+            backgroundImage: 'url("/assets/images/bg-art-icon-1.svg")',
+            backgroundSize: 'contain',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        />
         <motion.p 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -111,7 +121,7 @@ const Home = () => {
                 className="group bg-[#FAF9F6] border border-black/5 p-10 transition-all hover:shadow-[0_40px_100px_rgba(0,0,0,0.06)] hover:-translate-y-2"
               >
                 <div className="relative overflow-hidden aspect-[1.2] mb-10 shadow-lg">
-                  <motion.img 
+                   <motion.img 
                     whileHover={{ scale: 1.1 }}
                     transition={{ duration: 0.8 }}
                     src={suite.image}
@@ -121,12 +131,12 @@ const Home = () => {
                 </div>
                 <h3 className="text-[32px] font-forum mb-10 text-malon-dark">{suite.name}</h3>
                 <div className="flex space-x-4">
-                  <Link to={`/suites/${suite.id}`} className="flex-1 bg-malon-accent/80 text-white text-[11px] uppercase tracking-[.25em] font-bold py-4 hover:bg-malon-accent transition-all text-center">
+                  <Link to={`/hotel-search/${suite.id}`} className="flex-1 bg-malon-primary/80 text-white text-[11px] uppercase tracking-[.25em] font-bold py-4 hover:bg-malon-primary transition-all text-center">
                     View Details
                   </Link>
-                  <button className="flex-1 bg-malon-accent/80 text-white text-[11px] uppercase tracking-[.25em] font-bold py-4 hover:bg-malon-accent transition-all">
+                  <Link to="/hotel-search" className="flex-1 bg-malon-primary/80 text-white text-[11px] uppercase tracking-[.25em] font-bold py-4 hover:bg-malon-primary transition-all text-center">
                     Book Now
-                  </button>
+                  </Link>
                 </div>
               </motion.div>
             ))}

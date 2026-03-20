@@ -1,101 +1,139 @@
-import React from 'react'
-import { motion } from 'framer-motion'
-import ContactForm from '../components/ContactForm'
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { MapPin, Phone, Mail, Instagram, Facebook, Twitter, Youtube } from 'lucide-react';
 
 const ContactUs = () => {
   return (
-    <div className="pt-[150px]">
-      <section className="bg-malon-dark text-white py-[180px] text-center relative overflow-hidden">
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="relative z-10"
-        >
-          <h1 className="text-[60px] md:text-[90px] font-forum leading-tight">Contact Us</h1>
-          <div className="text-malon-gold tracking-[.4em] uppercase text-[12px] font-bold mt-4">Get In Touch</div>
-        </motion.div>
-        
-        {/* Ken Burns Background */}
-        <div className="absolute inset-0 bg-black/60 z-0"></div>
-        <motion.div 
-          initial={{ scale: 1 }}
-          animate={{ scale: 1.1 }}
-          transition={{ duration: 20, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
-          className="absolute inset-0 z-[-1] opacity-70"
-          style={{
-            backgroundImage: 'url("https://images.unsplash.com/photo-1534536281715-e28d76689b4d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80")',
-            backgroundPosition: 'center',
-            backgroundSize: 'cover'
-          }}
-        />
-      </section>
-
-      <section className="py-[120px] bg-white">
-        <div className="max-w-[1400px] mx-auto px-10 grid grid-cols-1 lg:grid-cols-2 gap-24 items-start">
-            <motion.div 
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                className="space-y-16"
-            >
-                <div>
-                   <h2 className="text-[55px] font-forum text-malon-dark mb-10">Our Studio</h2>
-                   <div className="space-y-8 text-malon-gray/80 text-[16px] leading-[1.8] font-medium">
-                      <p className="flex items-start">
-                         <span className="text-malon-gold mr-6 font-bold text-[18px]">A.</span>
-                         129 Miller Road, Lakewood, New Jersey 08701, United States
-                      </p>
-                      <p className="flex items-start">
-                         <span className="text-malon-gold mr-6 font-bold text-[18px]">P.</span>
-                         908 - 94- MALON (62566)
-                      </p>
-                      <p className="flex items-start">
-                         <span className="text-malon-gold mr-6 font-bold text-[18px]">E.</span>
-                         reservation@malonluxurysuites.com
-                      </p>
-                   </div>
-                </div>
-                
-                <div className="pt-12 border-t border-black/5">
-                   <h3 className="text-[12px] uppercase tracking-[.4em] font-bold text-malon-gold mb-10">FOLLOW US</h3>
-                   <div className="flex space-x-12 text-[14px] font-bold text-malon-dark">
-                      <a href="#" className="hover:text-malon-gold transition-colors tracking-widest uppercase">Facebook</a>
-                      <a href="#" className="hover:text-malon-gold transition-colors tracking-widest uppercase">Instagram</a>
-                      <a href="#" className="hover:text-malon-gold transition-colors tracking-widest uppercase">Twitter</a>
-                   </div>
-                </div>
-            </motion.div>
+    <div className="pt-[110px] bg-[#fdfbf7] min-h-screen font-forum">
+      {/* Main Content Section */}
+      <section className="py-20 lg:py-32">
+        <div className="max-w-[1400px] mx-auto px-6 md:px-10 lg:px-20">
+          <div className="flex flex-col lg:flex-row gap-20 items-stretch">
             
+            {/* Left Column: Featured Card */}
             <motion.div 
-               initial={{ opacity: 0, x: 50 }}
-               whileInView={{ opacity: 1, x: 0 }}
-               viewport={{ once: true }}
-               transition={{ duration: 0.8 }}
-               className="bg-[#FAF9F6] p-12 md:p-16 border border-black/5 shadow-2xl relative"
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="w-full lg:w-[45%] relative min-h-[500px] lg:min-h-full overflow-hidden shadow-2xl group border-[12px] border-white"
             >
-                <div className="absolute top-0 right-0 w-24 h-24 border-t border-r border-malon-gold/20 translate-x-4 translate-y-[-16px]"></div>
-                <ContactForm />
+              {/* Background with darker overlay */}
+              <div 
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-105"
+                style={{ backgroundImage: 'url("/assets/images/SEV05322.jpg")' }}
+              />
+              <div className="absolute inset-0 bg-black/50" />
+              
+              {/* Card Content */}
+              <div className="relative h-full z-10 p-12 flex flex-col items-center justify-center text-center text-white space-y-8">
+                <img 
+                  src="/assets/logo.png" 
+                  alt="Malon Logo" 
+                  className="w-32 brightness-0 invert opacity-90"
+                />
+                <h2 className="text-[36px] md:text-[45px] font-forum leading-tight tracking-tight">
+                  Discover The Hotel Of Your Choice
+                </h2>
+                <Link 
+                  to="/hotel-search" 
+                  className="bg-[#967D52] hover:bg-[#836c46] text-white px-10 py-4 uppercase tracking-[.2em] font-bold text-[13px] transition-all transform hover:-translate-y-1 shadow-lg text-center"
+                >
+                  Make A Reservation
+                </Link>
+              </div>
             </motion.div>
+
+            {/* Right Column: Contact Form */}
+            <motion.div 
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="w-full lg:w-[55%] py-4"
+            >
+              <span className="text-[12px] uppercase tracking-[.4em] text-[#967D52] font-black block mb-6">Reach Us</span>
+              <h1 className="text-[45px] md:text-[55px] text-[#333333] mb-8 font-forum leading-none">
+                Connect With Malon
+              </h1>
+              <p className="text-[16px] text-[#333333]/70 font-sans leading-relaxed mb-12 max-w-[550px]">
+                Have a question or want to book your stay? Contact Malon for quick assistance with availability, pricing, or custom packages. Your comfort is our priority.
+              </p>
+
+              {/* Form Grid */}
+              <form className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <input 
+                      type="text" 
+                      placeholder="First Name*" 
+                      className="w-full bg-[#f6f3ed] border border-[#e5e0d4] p-4 font-sans text-[14px] outline-none focus:border-[#967D52] transition-colors"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <input 
+                      type="text" 
+                      placeholder="Last Name*" 
+                      className="w-full bg-[#f6f3ed] border border-[#e5e0d4] p-4 font-sans text-[14px] outline-none focus:border-[#967D52] transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <input 
+                      type="email" 
+                      placeholder="Email Address*" 
+                      className="w-full bg-[#f6f3ed] border border-[#e5e0d4] p-4 font-sans text-[14px] outline-none focus:border-[#967D52] transition-colors"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <input 
+                      type="tel" 
+                      placeholder="Mobile Number*" 
+                      className="w-full bg-[#f6f3ed] border border-[#e5e0d4] p-4 font-sans text-[14px] outline-none focus:border-[#967D52] transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <textarea 
+                    placeholder="Additional Message*" 
+                    rows={6}
+                    className="w-full bg-[#f6f3ed] border border-[#e5e0d4] p-4 font-sans text-[14px] outline-none focus:border-[#967D52] transition-colors resize-none"
+                  />
+                </div>
+
+                {/* SMS Consent Checkbox */}
+                <div className="flex gap-4 items-start">
+                  <input type="checkbox" className="mt-1 accent-[#967D52] w-4 h-4" />
+                  <p className="text-[12px] text-[#333333]/60 font-sans leading-relaxed">
+                    By submitting this form, you consent to receive text messages from **Malon Luxury Suites** about your inquiry, booking updates, or customer support. Message frequency varies. Msg & data rates may apply. You can reply STOP at any time to unsubscribe or HELP for assistance. Your information is protected and used according to our Privacy Policy.
+                  </p>
+                </div>
+
+                <button className="bg-[#967D52] hover:bg-[#333333] text-white px-12 py-5 uppercase tracking-[0.25em] font-black text-[12px] transition-all shadow-md">
+                  Send
+                </button>
+              </form>
+            </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Map Section */}
-      <section className="w-full h-[650px] bg-gray-200 relative grayscale hover:grayscale-0 transition-all duration-1000">
-         <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3056.2413554167527!2d-74.212!3d40.08!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c176378e859b7b%3A0xe960205dfb158087!2s129%20Miller%20Rd%2C%20Lakewood%2C%20NJ%2008701!5e0!3m2!1sen!2sus!4v1700000000000!5m2!1sen!2sus" 
-            width="100%" 
-            height="100%" 
-            style={{ border: 0 }} 
-            allowFullScreen="" 
-            loading="lazy" 
-            referrerPolicy="no-referrer-when-downgrade"
-            className="filter saturate-50"
-         />
+      <section className="h-[500px] w-full bg-white relative">
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3056.4168050965743!2d-74.2257216!3d40.0984918!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c177579c09623d%3A0xc6657cca07a6f233!2s129%20Miller%20Rd%2C%20Lakewood%2C%20NJ%2008701%2C%20USA!5e0!3m2!1sen!2sin!4v1710920000000!5m2!1sen!2sin" 
+          width="100%" 
+          height="100%" 
+          style={{ border: 0 }} 
+          allowFullScreen="" 
+          loading="lazy" 
+          referrerPolicy="no-referrer-when-downgrade"
+          className="grayscale hover:grayscale-0 transition-all duration-1000"
+        />
       </section>
     </div>
-  )
-}
+  );
+};
 
-export default ContactUs
+export default ContactUs;

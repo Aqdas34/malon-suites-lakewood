@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Hero = () => {
@@ -9,19 +10,19 @@ const Hero = () => {
       title: "Nightly Stays",
       subtitle: "A HOTEL SUITE EXPERIENCE IN A HOME SETTING",
       description: "AVAILABLE FOR RENT JUST LIKE A HOTEL, WHILE STAYING LOCAL AND CLOSE TO EVERYTHING YOU NEED.",
-      image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
+      image: "/assets/images/Slider-01.webp"
     },
     {
       title: "Perfectly Sized Suites",
       subtitle: "DESIGNED FOR YOUR COMFORT",
       description: "Ideal for singles or couples, thoughtfully priced for your stay.",
-      image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
+      image: "/assets/images/Slider-02.webp"
     },
     {
       title: "Boutique Experience",
       subtitle: "YOUR HOME AWAY FROM HOME",
       description: "Experience the luxury of a suite with the warmth of a local neighborhood.",
-      image: "https://images.unsplash.com/photo-1590490360182-c33d57733427?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80"
+      image: "/assets/images/SEV05322.jpg"
     }
   ];
 
@@ -39,7 +40,7 @@ const Hero = () => {
         <motion.div
           key={currentSlide}
           initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 0.45, scale: 1 }}
+          animate={{ opacity: 0.6, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
           transition={{ duration: 1.8, ease: "easeInOut" }}
           className="absolute inset-0 z-0 bg-cover bg-center"
@@ -76,9 +77,12 @@ const Hero = () => {
             </motion.p>
 
             <motion.div>
-              <button className="bg-[#D9534F] text-white px-16 py-6 text-[13px] uppercase tracking-[.4em] font-bold hover:bg-malon-dark transition-all duration-700 rounded-sm shadow-2xl">
+              <Link 
+                to="/hotel-search"
+                className="inline-block bg-malon-primary text-white px-16 py-6 text-[13px] uppercase tracking-[.4em] font-bold hover:bg-malon-dark transition-all duration-700 rounded-sm shadow-2xl"
+              >
                 Book Now
-              </button>
+              </Link>
             </motion.div>
           </motion.div>
         </AnimatePresence>

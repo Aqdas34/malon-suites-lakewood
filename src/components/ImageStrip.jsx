@@ -2,17 +2,17 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const images = [
-  "https://malonluxurysuites.com/wp-content/uploads/2025/10/rsw_1280h_854.webp",
-  "https://malonluxurysuites.com/wp-content/uploads/2025/10/rsw_1280h_854-1.webp",
-  "https://malonluxurysuites.com/wp-content/uploads/2025/10/rsw_1280h_854-2.webp",
-  "https://malonluxurysuites.com/wp-content/uploads/2025/10/rsw_1280h_854-3.webp",
-  "https://malonluxurysuites.com/wp-content/uploads/2025/10/rsw_1280h_854-4.webp",
-  "https://malonluxurysuites.com/wp-content/uploads/2025/10/rsw_1280h_854-5.webp",
-  "https://malonluxurysuites.com/wp-content/uploads/2025/10/rsw_1280h_854-6.webp",
-  "https://malonluxurysuites.com/wp-content/uploads/2023/06/SEV05377-scaled.jpg",
-  "https://malonluxurysuites.com/wp-content/uploads/2025/12/SEV06275-1-2-scaled.jpg",
-  "https://malonluxurysuites.com/wp-content/uploads/2025/12/SEV06305-2-scaled.jpg",
-  "https://malonluxurysuites.com/wp-content/uploads/2025/12/SEV06285-2-scaled.jpg"
+  "/assets/images/SEV05322.jpg",
+  "/assets/images/SEV05327.jpg",
+  "/assets/images/SEV05337-1.jpg",
+  "/assets/images/SEV05362.jpg",
+  "/assets/images/SEV05372.jpg",
+  "/assets/images/SEV05377.jpg",
+  "/assets/images/SEV05387.jpg",
+  "/assets/images/Room-4@2x.jpg",
+  "/assets/images/Room-5@2x.jpg",
+  "/assets/images/Room-6@2x.jpg",
+  "/assets/images/Room-7@2x.jpg"
 ];
 
 const ImageStrip = () => {
