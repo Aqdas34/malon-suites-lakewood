@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import api from '../services/api'
 import Hero from '../components/Hero'
 import BookingBar from '../components/BookingBar'
 import ImageStrip from '../components/ImageStrip'
@@ -9,23 +10,26 @@ import PricingSection from '../components/PricingSection'
 import ConnectSection from '../components/ConnectSection'
 
 const Home = () => {
-  const suites = [
-    {
-      id: "bellinger-st-suites",
-      name: "Bellinger Street Suites",
-      image: "/assets/images/SEV05322.jpg",
-    },
-    {
-      id: "laurel-ave-suite",
-      name: "Laurel Avenue Suite",
-      image: "/assets/images/SEV05327.jpg",
-    },
-    {
-      id: "miller-rd-suite",
-      name: "Miller Rd. Suite",
-      image: "/assets/images/SEV05337-1.jpg",
-    }
-  ];
+  const [suites, setSuites] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    api.getSuites()
+      .then(data => {
+        setSuites(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Error fetching suites:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return (
+    <div className="h-screen flex items-center justify-center bg-white text-malon-gold font-forum text-2xl">
+      Loading Malon Experience...
+    </div>
+  );
 
   return (
     <>
@@ -111,35 +115,41 @@ const Home = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-            {suites.map((suite, index) => (
-              <motion.div 
-                key={index}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
-                className="group bg-[#FAF9F6] border border-black/5 p-10 transition-all hover:shadow-[0_40px_100px_rgba(0,0,0,0.06)] hover:-translate-y-2"
-              >
-                <div className="relative overflow-hidden aspect-[1.2] mb-10 shadow-lg">
-                   <motion.img 
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ duration: 0.8 }}
-                    src={suite.image}
-                    alt={suite.name}
-                    className="object-cover w-full h-full cursor-pointer"
-                  />
-                </div>
-                <h3 className="text-[32px] font-forum mb-10 text-malon-dark">{suite.name}</h3>
-                <div className="flex space-x-4">
-                  <Link to={`/hotel-search/${suite.id}`} className="flex-1 bg-malon-primary/80 text-white text-[11px] uppercase tracking-[.25em] font-bold py-4 hover:bg-malon-primary transition-all text-center">
-                    View Details
-                  </Link>
-                  <Link to="/hotel-search" className="flex-1 bg-malon-primary/80 text-white text-[11px] uppercase tracking-[.25em] font-bold py-4 hover:bg-malon-primary transition-all text-center">
-                    Book Now
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
+            {suites.map((suite, index) => {
+              // Handle potential JSON string from DB
+              const images = typeof suite.images === 'string' ? JSON.parse(suite.images) : (suite.images || []);
+              const mainImage = images[0] || "/assets/images/SEV05322.jpg";
+              
+              return (
+                <motion.div 
+                  key={suite.id}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: index * 0.2 }}
+                  className="group bg-[#FAF9F6] border border-black/5 p-10 transition-all hover:shadow-[0_40px_100px_rgba(0,0,0,0.06)] hover:-translate-y-2"
+                >
+                  <div className="relative overflow-hidden aspect-[1.2] mb-10 shadow-lg">
+                    <motion.img 
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.8 }}
+                      src={mainImage.startsWith('http') ? mainImage : `/${mainImage}`}
+                      alt={suite.title}
+                      className="object-cover w-full h-full cursor-pointer"
+                    />
+                  </div>
+                  <h3 className="text-[32px] font-forum mb-10 text-malon-dark">{suite.title}</h3>
+                  <div className="flex space-x-4">
+                    <Link to={`/hotel-search/${suite.id}`} className="flex-1 bg-malon-primary/80 text-white text-[11px] uppercase tracking-[.25em] font-bold py-4 hover:bg-malon-primary transition-all text-center">
+                      View Details
+                    </Link>
+                    <Link to="/hotel-search" className="flex-1 bg-malon-primary/80 text-white text-[11px] uppercase tracking-[.25em] font-bold py-4 hover:bg-malon-primary transition-all text-center">
+                      Book Now
+                    </Link>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
