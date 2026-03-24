@@ -1,0 +1,46 @@
+name: Deploy Malon Frontend to VPS
+
+on:
+  push:
+    branches:
+      - main # Change this if your branch name is different
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Deploy Frontend via SSH
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USERNAME }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        script: |
+          # 1. Create Web Directory if missing
+          mkdir -p /var/www
+          cd /var/www
+          
+          # 2. Extract repository name dynamically to support whatever you named it!
+          REPO_NAME=$(basename ${{ github.repository }})
+          
+          # 3. Check if the repo exists. If not, auto-clone it securely
+          if [ ! -d "$REPO_NAME" ]; then
+            git clone https://github.com/${{ github.repository }}.git
+          fi
+          
+          # 4. Navigate directly into the cloned repository
+          cd $REPO_NAME
+          
+          # 5. Pull the newest updates from GitHub
+          git pull origin main
+          
+          # 6. Set up the production API route for Nginx
+          echo "VITE_API_BASE_URL=/api" > .env
+          
+          # 7. Install node modules and heavily optimize the production build
+          npm install
+          npm run build
+          
+          # 8. (Optional Server Cleanup) Remove old builds and drop the new build straight into Nginx!
+          echo "Frontend successfully built securely into the /dist folder!"

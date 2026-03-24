@@ -1,8 +1,32 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MapPin, Phone, Mail, Instagram, Facebook, Twitter, Youtube } from 'lucide-react';
+import { MapPin, Phone, Mail, Instagram, Facebook, Twitter, Youtube, CheckCircle, AlertCircle } from 'lucide-react';
+import api from '../services/api';
 
 const ContactUs = () => {
+  const [formData, setFormData] = React.useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    mobile: '',
+    message: ''
+  });
+  const [status, setStatus] = React.useState('idle'); // idle, loading, success, error
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('loading');
+    try {
+      await api.createContact(formData);
+      setStatus('success');
+      setFormData({ first_name: '', last_name: '', email: '', mobile: '', message: '' });
+    } catch (err) {
+      console.error("Contact submission failed", err);
+      setStatus('error');
+    }
+  };
+
   return (
     <div className="pt-[110px] bg-[#fdfbf7] min-h-screen font-forum">
       {/* Main Content Section */}
@@ -59,19 +83,25 @@ const ContactUs = () => {
               </p>
 
               {/* Form Grid */}
-              <form className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <input 
                       type="text" 
+                      required
                       placeholder="First Name*" 
+                      value={formData.first_name}
+                      onChange={e => setFormData({...formData, first_name: e.target.value})}
                       className="w-full bg-[#f6f3ed] border border-[#e5e0d4] p-4 font-sans text-[14px] outline-none focus:border-[#967D52] transition-colors"
                     />
                   </div>
                   <div className="space-y-2">
                     <input 
                       type="text" 
+                      required
                       placeholder="Last Name*" 
+                      value={formData.last_name}
+                      onChange={e => setFormData({...formData, last_name: e.target.value})}
                       className="w-full bg-[#f6f3ed] border border-[#e5e0d4] p-4 font-sans text-[14px] outline-none focus:border-[#967D52] transition-colors"
                     />
                   </div>
@@ -81,14 +111,20 @@ const ContactUs = () => {
                   <div className="space-y-2">
                     <input 
                       type="email" 
+                      required
                       placeholder="Email Address*" 
+                      value={formData.email}
+                      onChange={e => setFormData({...formData, email: e.target.value})}
                       className="w-full bg-[#f6f3ed] border border-[#e5e0d4] p-4 font-sans text-[14px] outline-none focus:border-[#967D52] transition-colors"
                     />
                   </div>
                   <div className="space-y-2">
                     <input 
                       type="tel" 
+                      required
                       placeholder="Mobile Number*" 
+                      value={formData.mobile}
+                      onChange={e => setFormData({...formData, mobile: e.target.value})}
                       className="w-full bg-[#f6f3ed] border border-[#e5e0d4] p-4 font-sans text-[14px] outline-none focus:border-[#967D52] transition-colors"
                     />
                   </div>
@@ -97,21 +133,41 @@ const ContactUs = () => {
                 <div className="space-y-2">
                   <textarea 
                     placeholder="Additional Message*" 
+                    required
                     rows={6}
+                    value={formData.message}
+                    onChange={e => setFormData({...formData, message: e.target.value})}
                     className="w-full bg-[#f6f3ed] border border-[#e5e0d4] p-4 font-sans text-[14px] outline-none focus:border-[#967D52] transition-colors resize-none"
                   />
                 </div>
 
                 {/* SMS Consent Checkbox */}
                 <div className="flex gap-4 items-start">
-                  <input type="checkbox" className="mt-1 accent-[#967D52] w-4 h-4" />
+                  <input type="checkbox" required className="mt-1 accent-[#967D52] w-4 h-4" />
                   <p className="text-[12px] text-[#333333]/60 font-sans leading-relaxed">
                     By submitting this form, you consent to receive text messages from **Malon Luxury Suites** about your inquiry, booking updates, or customer support. Message frequency varies. Msg & data rates may apply. You can reply STOP at any time to unsubscribe or HELP for assistance. Your information is protected and used according to our Privacy Policy.
                   </p>
                 </div>
 
-                <button className="bg-[#967D52] hover:bg-[#333333] text-white px-12 py-5 uppercase tracking-[0.25em] font-black text-[12px] transition-all shadow-md">
-                  Send
+                {status === 'success' && (
+                  <div className="p-4 bg-green-50 text-green-700 rounded-sm flex items-center shadow-inner">
+                    <CheckCircle size={20} className="mr-3 flex-shrink-0" />
+                    <span className="text-[13px] font-sans font-medium">Thank you! Your message has been sent to our desk. We will reach out shortly.</span>
+                  </div>
+                )}
+
+                {status === 'error' && (
+                  <div className="p-4 bg-red-50 text-red-700 rounded-sm flex items-center shadow-inner">
+                    <AlertCircle size={20} className="mr-3 flex-shrink-0" />
+                    <span className="text-[13px] font-sans font-medium">Something went wrong. Please try again or call us directly.</span>
+                  </div>
+                )}
+
+                <button 
+                  disabled={status === 'loading'}
+                  className="bg-[#967D52] hover:bg-[#333333] text-white px-12 py-5 uppercase tracking-[0.25em] font-black text-[12px] transition-all shadow-md disabled:opacity-50 flex items-center justify-center min-w-[150px]"
+                >
+                  {status === 'loading' ? 'Sending...' : 'Send'}
                 </button>
               </form>
             </motion.div>

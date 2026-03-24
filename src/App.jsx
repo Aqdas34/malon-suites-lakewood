@@ -10,6 +10,7 @@ import ContactUs from './pages/ContactUs'
 import SuiteDetail from './pages/SuiteDetail'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminLogin from './pages/AdminLogin'
+import Checkout from './pages/Checkout'
 
 function App() {
   const location = useLocation();
@@ -25,6 +26,7 @@ function App() {
         <Route path="/hotel-search" element={<Suites />} />
         <Route path="/hotel-search/:id" element={<SuiteDetail />} />
         <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/login" element={<AdminLogin />} />
       </Routes>

@@ -1,45 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import api from '../services/api';
 
 const PricingSection = () => {
-  const pricingData = [
-    {
-      location: "Miller Rd. Suite",
-      weekdayOne: "$375",
-      weekdayMulti: "$325",
-      shabbos: "$425",
-      motzeiShabbos: "$275",
-      fullWeek: "$2,092.50",
-      fullMonth: "$7,440"
-    },
-    {
-      location: "Laurel Ave. Suite",
-      weekdayOne: "$295",
-      weekdayMulti: "$275",
-      shabbos: "$375",
-      motzeiShabbos: "$175",
-      fullWeek: "$1,732.50",
-      fullMonth: "$6,160"
-    },
-    {
-      location: "Bellinger St. Suite A",
-      weekdayOne: "$325",
-      weekdayMulti: "$300",
-      shabbos: "$400",
-      motzeiShabbos: "$250",
-      fullWeek: "$1,935",
-      fullMonth: "$6,880"
-    },
-    {
-      location: "Bellinger St. Suite B",
-      weekdayOne: "$350",
-      weekdayMulti: "$300",
-      shabbos: "$400",
-      motzeiShabbos: "$250",
-      fullWeek: "$1,935",
-      fullMonth: "$6,880"
-    }
-  ];
+  const [suites, setSuites] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.getSuites()
+      .then(data => {
+        setSuites(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Error fetching suites:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  // Helpers for formatting
+  const formatPrice = (val, round=false) => val ? `$${Number(val).toLocaleString('en-US', {minimumFractionDigits: round ? 0 : 2}).replace(/\.00$/, '')}` : '-';
+
+  if (loading) return null;
 
   return (
     <section className="py-[120px] bg-malon-cream overflow-hidden">
@@ -61,7 +43,7 @@ const PricingSection = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="overflow-x-auto shadow-sm"
         >
-          <table className="w-full text-center border-collapse bg-white">
+          <table className="w-full text-center border-collapse bg-white min-w-[1000px]">
             <thead>
               <tr className="bg-malon-gold text-white text-[12px] md:text-[14px] uppercase tracking-wider font-poppins font-medium">
                 <th className="py-6 px-4 border border-black/5 font-medium">Location</th>
@@ -74,15 +56,15 @@ const PricingSection = () => {
               </tr>
             </thead>
             <tbody className="font-poppins text-malon-gray">
-              {pricingData.map((row, index) => (
-                <tr key={index} className="transition-colors hover:bg-malon-cream/30">
-                  <td className="py-6 px-4 border border-black/5 font-bold text-[15px]">{row.location}</td>
-                  <td className="py-6 px-4 border border-black/5 text-[15px]">{row.weekdayOne}</td>
-                  <td className="py-6 px-4 border border-black/5 text-[15px]">{row.weekdayMulti}</td>
-                  <td className="py-6 px-4 border border-black/5 text-[15px]">{row.shabbos}</td>
-                  <td className="py-6 px-4 border border-black/5 text-[15px]">{row.motzeiShabbos}</td>
-                  <td className="py-6 px-4 border border-black/5 text-[15px]">{row.fullWeek}</td>
-                  <td className="py-6 px-4 border border-black/5 text-[15px]">{row.fullMonth}</td>
+              {suites.map((suite) => (
+                <tr key={suite.id} className="transition-colors hover:bg-malon-cream/30">
+                  <td className="py-6 px-4 border border-black/5 font-bold text-[15px]">{suite.title}</td>
+                  <td className="py-6 px-4 border border-black/5 text-[15px]">{formatPrice(suite.price_weekday_one || suite.base_price, true)}</td>
+                  <td className="py-6 px-4 border border-black/5 text-[15px]">{formatPrice(suite.price_weekday_multiple || suite.base_price, true)}</td>
+                  <td className="py-6 px-4 border border-black/5 text-[15px]">{formatPrice(suite.price_shabbos || suite.base_price, true)}</td>
+                  <td className="py-6 px-4 border border-black/5 text-[15px]">{formatPrice(suite.price_motzei_shabbos || suite.base_price, true)}</td>
+                  <td className="py-6 px-4 border border-black/5 text-[15px]">{formatPrice(suite.price_weekly)}</td>
+                  <td className="py-6 px-4 border border-black/5 text-[15px]">{formatPrice(suite.price_monthly, true)}</td>
                 </tr>
               ))}
             </tbody>

@@ -2,7 +2,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../services/api'
 import { motion } from 'framer-motion'
-import { Calendar, Layout, Users, Plus, X, Check, ArrowLeft, ArrowRight, Tag, Coffee } from 'lucide-react'
+import { Calendar, Layout, Users, Plus, X, Check, ArrowLeft, ArrowRight, Tag, Coffee, Settings } from 'lucide-react'
 import AddSuiteModal from '../components/AddSuiteModal'
 import AddDiscountModal from '../components/AddDiscountModal'
 import ManualBookingModal from '../components/ManualBookingModal'
@@ -21,6 +21,13 @@ const AdminDashboard = () => {
   const [discounts, setDiscounts] = React.useState([]);
   const [editingDiscount, setEditingDiscount] = React.useState(null);
   const [selectedSuiteForBooking, setSelectedSuiteForBooking] = React.useState(null);
+  const [contacts, setContacts] = React.useState([]);
+  const [globalSettings, setGlobalSettings] = React.useState({
+    check_in_time: '',
+    check_out_time: '',
+    house_rules: '',
+    refund_policy: ''
+  });
 
   // Availability View State
   const [selectedSuite, setSelectedSuite] = React.useState(null);
@@ -35,10 +42,18 @@ const AdminDashboard = () => {
 
     const loadData = async () => {
       try {
-        const [b, s, d] = await Promise.all([api.getBookings(), api.getSuites(), api.getDiscounts()]);
+        const [b, s, d, c, st] = await Promise.all([
+          api.getBookings(), 
+          api.getSuites(), 
+          api.getDiscounts(),
+          api.getContacts(),
+          api.getSettings()
+        ]);
         setBookings(b);
         setSuites(s);
         setDiscounts(d);
+        setContacts(c);
+        setGlobalSettings(st);
         if (s.length > 0 && !selectedSuite) setSelectedSuite(s[0]);
         setLoading(false);
       } catch (err) {
@@ -75,11 +90,12 @@ const AdminDashboard = () => {
     try {
       if (blockedDates.includes(dateStr)) {
         await api.unblockDate(selectedSuite.id, dateStr);
-        setBlockedDates(prev => prev.filter(d => d !== dateStr));
       } else {
         await api.blockDate(selectedSuite.id, dateStr, "Manual Block");
-        setBlockedDates(prev => [...prev, dateStr]);
       }
+      // RE-FETCH TRUTH FROM SERVER
+      const fresh = await api.getBlockedDates(selectedSuite.id);
+      setBlockedDates(fresh);
     } catch (err) {
       alert("Action failed: " + err.message);
     }
@@ -120,6 +136,20 @@ const AdminDashboard = () => {
           >
             <Tag size={20} />
             <span className="text-[12px] uppercase tracking-widest font-bold">Discounts</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('inquiries')}
+            className={`w-full flex items-center space-x-4 p-4 rounded-lg transition-all ${activeTab === 'inquiries' ? 'bg-[#9A8050] text-white' : 'hover:bg-white/10 text-white/60'}`}
+          >
+            <Users size={20} />
+            <span className="text-[12px] uppercase tracking-widest font-bold">Inquiries</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('settings')}
+            className={`w-full flex items-center space-x-4 p-4 rounded-lg transition-all ${activeTab === 'settings' ? 'bg-[#9A8050] text-white' : 'hover:bg-white/10 text-white/60'}`}
+          >
+            <Settings size={20} />
+            <span className="text-[12px] uppercase tracking-widest font-bold">Settings</span>
           </button>
         </nav>
         <button
@@ -349,6 +379,114 @@ const AdminDashboard = () => {
                     ))}
                   </tbody>
                 </table>
+              </div>
+            </div>
+          )}
+          {activeTab === 'inquiries' && (
+            <div className="p-2 overflow-hidden">
+               <table className="w-full text-left">
+                  <thead className="bg-[#FAF9F6] border-b border-black/5">
+                    <tr>
+                      <th className="p-8 text-[11px] uppercase tracking-[.25em] font-bold text-malon-gray/60">Sender</th>
+                      <th className="p-8 text-[11px] uppercase tracking-[.25em] font-bold text-malon-gray/60">Contact Info</th>
+                      <th className="p-8 text-[11px] uppercase tracking-[.25em] font-bold text-malon-gray/60">Message</th>
+                      <th className="p-8 text-[11px] uppercase tracking-[.25em] font-bold text-malon-gray/60">Received</th>
+                      <th className="p-8 text-[11px] uppercase tracking-[.25em] font-bold text-malon-gray/60">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {contacts.map(contact => (
+                      <tr key={contact.id} className={`border-b border-black/[0.03] hover:bg-[#FAF9F6] transition-all ${contact.status === 'pending' ? 'bg-malon-gold/[0.02]' : ''}`}>
+                        <td className="p-8">
+                          <div className="font-bold text-malon-dark text-lg">{contact.first_name} {contact.last_name}</div>
+                        </td>
+                        <td className="p-8">
+                          <div className="text-[13px] text-malon-dark font-medium">{contact.email}</div>
+                          <div className="text-[11px] text-malon-gray/60 tracking-wider pt-1">{contact.mobile}</div>
+                        </td>
+                        <td className="p-8">
+                          <p className="text-[13px] text-malon-gray leading-relaxed max-w-md line-clamp-2 italic">"{contact.message}"</p>
+                        </td>
+                        <td className="p-8 text-[12px] text-malon-gray font-medium">
+                          {format(new Date(contact.created_at), 'MMM dd, yyyy HH:mm')}
+                        </td>
+                        <td className="p-8">
+                          {contact.status === 'pending' ? (
+                            <button 
+                              onClick={async () => {
+                                await api.updateContactStatus(contact.id, 'read');
+                                api.getContacts().then(setContacts);
+                              }}
+                              className="bg-malon-gold text-white px-4 py-2 rounded-sm text-[9px] uppercase font-bold tracking-widest hover:bg-malon-dark transition-all"
+                            >
+                              Mark as Read
+                            </button>
+                          ) : (
+                            <span className="text-malon-gray/40 text-[9px] uppercase font-bold tracking-widest flex items-center">
+                              <Check size={12} className="mr-2" />
+                              Handled
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+               </table>
+            </div>
+          )}
+          {activeTab === 'settings' && (
+            <div className="p-12 max-w-2xl">
+              <h3 className="text-2xl font-forum uppercase tracking-widest mb-10">Global Policy Management</h3>
+              <div className="space-y-8">
+                <div className="grid grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest font-bold text-malon-gray mb-2">Check-In Time</label>
+                    <input 
+                      type="text" 
+                      value={globalSettings.check_in_time} 
+                      onChange={e => setGlobalSettings({...globalSettings, check_in_time: e.target.value})}
+                      className="w-full bg-[#FAF9F6] border border-black/10 p-4 outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] uppercase tracking-widest font-bold text-malon-gray mb-2">Check-Out Time</label>
+                    <input 
+                      type="text" 
+                      value={globalSettings.check_out_time} 
+                      onChange={e => setGlobalSettings({...globalSettings, check_out_time: e.target.value})}
+                      className="w-full bg-[#FAF9F6] border border-black/10 p-4 outline-none"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest font-bold text-malon-gray mb-2">Global House Rules</label>
+                  <textarea 
+                    value={globalSettings.house_rules} 
+                    onChange={e => setGlobalSettings({...globalSettings, house_rules: e.target.value})}
+                    className="w-full bg-[#FAF9F6] border border-black/10 p-4 outline-none h-32"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest font-bold text-malon-gray mb-2">Global Refund Policy</label>
+                  <textarea 
+                    value={globalSettings.refund_policy} 
+                    onChange={e => setGlobalSettings({...globalSettings, refund_policy: e.target.value})}
+                    className="w-full bg-[#FAF9F6] border border-black/10 p-4 outline-none h-32"
+                  />
+                </div>
+                <button 
+                  onClick={async () => {
+                    try {
+                      await api.updateSettings(globalSettings);
+                      alert("Policies updated successfully.");
+                    } catch (err) {
+                      alert("Update failed: " + err.message);
+                    }
+                  }}
+                  className="bg-malon-gold text-white px-10 py-4 text-[11px] uppercase tracking-widest font-bold hover:bg-malon-dark transition-all"
+                >
+                  Save Global Policies
+                </button>
               </div>
             </div>
           )}

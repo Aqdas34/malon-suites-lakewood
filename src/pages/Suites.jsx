@@ -80,6 +80,44 @@ const Suites = () => {
         </div>
       </div>
 
+      {/* Dynamic Pricing Table */}
+      <section className="max-w-[1240px] mx-auto px-6 mb-20 overflow-x-auto">
+        <h2 className="text-[40px] font-forum text-[#333333] mb-8">Pricing for All Locations</h2>
+        <div className="bg-white border flex flex-col items-center border-[#f3eee4] shadow-sm mb-6 w-full">
+           <table className="w-full text-center border-collapse min-w-[1000px] font-sans">
+             <thead>
+               <tr className="bg-[#A68A57] text-white uppercase text-[11px] tracking-widest leading-relaxed">
+                 <th className="py-6 px-4 border-r border-white/20 font-bold">Location</th>
+                 <th className="py-6 px-4 border-r border-white/20 font-bold">Weekday<br/>One Night</th>
+                 <th className="py-6 px-4 border-r border-white/20 font-bold">Weekday<br/>Multiple Nights</th>
+                 <th className="py-6 px-4 border-r border-white/20 font-bold">Shabbos</th>
+                 <th className="py-6 px-4 border-r border-white/20 font-bold">Motzei Shabbos</th>
+                 <th className="py-6 px-4 border-r border-white/20 font-bold">Full Week<br/>(10% Off)</th>
+                 <th className="py-6 px-4 font-bold">Full Month<br/>(20% Off)</th>
+               </tr>
+             </thead>
+             <tbody>
+               {suites.map((suite, index) => {
+                 // Helpers for formatting
+                 const formatPrice = (val, round=false) => val ? `$${Number(val).toLocaleString('en-US', {minimumFractionDigits: round ? 0 : 2}).replace(/\.00$/, '')}` : '-';
+                 
+                 return (
+                   <tr key={suite.id} className="border-b border-[#f3eee4] hover:bg-[#FAF9F6] transition-colors bg-white">
+                     <td className="py-6 px-4 font-bold text-[#333] text-[13px] border-r border-[#f3eee4]">{suite.title}</td>
+                     <td className="py-6 px-4 text-[#666] text-[14px] border-r border-[#f3eee4]">{formatPrice(suite.price_weekday_one || suite.base_price, true)}</td>
+                     <td className="py-6 px-4 text-[#666] text-[14px] border-r border-[#f3eee4]">{formatPrice(suite.price_weekday_multiple || suite.base_price, true)}</td>
+                     <td className="py-6 px-4 text-[#666] text-[14px] border-r border-[#f3eee4]">{formatPrice(suite.price_shabbos || suite.base_price, true)}</td>
+                     <td className="py-6 px-4 text-[#666] text-[14px] border-r border-[#f3eee4]">{formatPrice(suite.price_motzei_shabbos || suite.base_price, true)}</td>
+                     <td className="py-6 px-4 text-[#666] text-[14px] border-r border-[#f3eee4]">{formatPrice(suite.price_weekly)}</td>
+                     <td className="py-6 px-4 text-[#666] text-[14px]">{formatPrice(suite.price_monthly, true)}</td>
+                   </tr>
+                 );
+               })}
+             </tbody>
+           </table>
+        </div>
+      </section>
+
       {/* Suites Grid */}
       <section className="max-w-[1440px] mx-auto px-6 pb-32">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">

@@ -8,10 +8,12 @@ export const calculateTotal = (basePrice, checkIn, checkOut, discounts, breakfas
 
   const start = new Date(checkIn);
   const end = new Date(checkOut);
+  if (isNaN(start.getTime()) || isNaN(end.getTime())) return 0;
+  
   const diffTime = Math.abs(end - start);
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-  if (diffDays <= 0) return 0;
+  if (isNaN(diffDays) || diffDays <= 0) return 0;
 
   let finalPrice = basePrice * diffDays;
   let appliedDiscount = null;
