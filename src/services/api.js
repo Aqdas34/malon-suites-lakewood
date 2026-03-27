@@ -28,6 +28,9 @@ const api = {
   getBookings: () => axios.get(`${API_BASE_URL}/bookings`).then(res => res.data),
   createBooking: (data) => axios.post(`${API_BASE_URL}/bookings`, data).then(res => res.data),
 
+  // Payments / Stripe
+  createPaymentIntent: (data) => axios.post(`${API_BASE_URL}/create-payment-intent`, data).then(res => res.data),
+
   // Availability
   getBlockedDates: (suiteId) => axios.get(`${API_BASE_URL}/blocked-dates/${suiteId}`).then(res => res.data),
   blockDate: (suiteId, date, reason) => axios.post(`${API_BASE_URL}/blocked-dates`, { suite_id: suiteId, blocked_date: date, reason }).then(res => res.data),

@@ -8,7 +8,9 @@ const AdminLogin = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    if (password === 'admin123') { // Simple mock auth
+    const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASSWORD || 'admin123';
+    
+    if (password === ADMIN_PASS) {
       localStorage.setItem('isAdmin', 'true');
       navigate('/admin');
     } else {
@@ -27,8 +29,8 @@ const AdminLogin = () => {
           backgroundRepeat: 'no-repeat'
         }}
       />
-      
-      <motion.div 
+
+      <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
@@ -38,13 +40,13 @@ const AdminLogin = () => {
           <p className="text-malon-gold text-[10px] uppercase tracking-[.5em] font-bold mb-4 italic">Security Portal</p>
           <h1 className="text-4xl font-forum text-malon-dark uppercase tracking-widest">Administrative Access</h1>
         </div>
-        
+
         <form onSubmit={handleLogin} className="space-y-8">
           <div>
             <label className="block text-[10px] uppercase tracking-[.3em] font-bold text-malon-gray/60 mb-3">System Key</label>
-            <input 
-              type="password" 
-              value={password} 
+            <input
+              type="password"
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full bg-[#FAF9F6] border border-black/5 p-5 outline-none focus:border-malon-gold transition-all font-sans text-center tracking-[.8em] text-lg"
               placeholder="••••••••"
@@ -54,9 +56,9 @@ const AdminLogin = () => {
             <span>Unlock Console</span>
           </button>
         </form>
-        
+
         <div className="mt-12 pt-8 border-t border-black/[0.03] text-center">
-           <Link to="/" className="text-[10px] uppercase tracking-widest text-malon-gray hover:text-malon-gold transition-all font-bold">← Return to Guest Site</Link>
+          <Link to="/" className="text-[10px] uppercase tracking-widest text-malon-gray hover:text-malon-gold transition-all font-bold">← Return to Guest Site</Link>
         </div>
       </motion.div>
     </div>

@@ -3,10 +3,16 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Search, Coffee, Clock, CreditCard } from 'lucide-react'
 import { format } from 'date-fns'
 import api from '../services/api'
+import { loadStripe } from '@stripe/stripe-js'
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js'
 
-const Checkout = () => {
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_KEY || 'pk_test_sample');
+
+const CheckoutContent = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const stripe = useStripe();
+  const elements = useElements();
   const { suite, checkIn, checkOut, pricing } = location.state || {};
 
   const [formData, setFormData] = React.useState({
@@ -34,6 +40,7 @@ const Checkout = () => {
   });
 
   const [isProcessing, setIsProcessing] = React.useState(false);
+  const [isSuccess, setIsSuccess] = React.useState(false);
 
   if (!suite || !checkIn || !checkOut || !pricing) {
     return (
@@ -69,35 +76,73 @@ const Checkout = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsProcessing(true);
+    if (!stripe || !elements) return; // Stripe.js has not loaded yet
     
-    setTimeout(async () => {
-      try {
-        const payload = {
+    setIsProcessing(true);
+
+    try {
+      // 1. CREATE A PENDING BOOKING IN THE DATABASE FIRST
+      // This ensures we have a record even if the payment fails or the browser closes!
+      const initialPayload = {
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        email: formData.email,
+        mobile: formData.phone,
+        suite_id: suite.id,
+        check_in: checkIn,
+        check_out: checkOut,
+        breakfast_dates: [],
+        total_cost: finalTotal,
+        notes: formData.order_notes,
+        extras: JSON.stringify(extras),
+        status: 'pending' // Initially pending
+      };
+        
+      const booking = await api.createBooking(initialPayload);
+      const bookingId = booking.id;
+
+      // 2. RUN PAYMENT FLOW
+      if (formData.payment_method === 'credit_card') {
+        const { clientSecret, error: backendError } = await api.createPaymentIntent({
+          total_cost: finalTotal,
+          suite_id: suite.id,
           first_name: formData.first_name,
           last_name: formData.last_name,
           email: formData.email,
-          mobile: formData.phone,
-          suite_id: suite.id,
+          phone: formData.phone,
           check_in: checkIn,
           check_out: checkOut,
-          breakfast_dates: [], // deprecated from here
-          total_cost: finalTotal,
-          notes: formData.order_notes,
-          extras: JSON.stringify(extras)
-        };
-        
-        await api.createBooking(payload);
-        alert("Booking Successful! A confirmation email has been sent.");
-        navigate('/');
-      } catch (err) {
-         // Decode server error message gracefully
-         const errorMessage = err.response?.data?.error || err.message;
-         alert("Checkout Failed: " + errorMessage);
-      } finally {
-        setIsProcessing(false);
+          booking_id: bookingId // Pass the ID so the Webhook knows which row to update!
+        });
+
+        if (backendError) throw new Error(backendError);
+
+        const cardElement = elements.getElement(CardElement);
+        const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: cardElement,
+            billing_details: {
+              name: `${formData.first_name} ${formData.last_name}`,
+              email: formData.email,
+              phone: formData.phone,
+              address: { line1: formData.street_address, city: formData.city, postal_code: formData.zip, state: formData.state, country: 'US' }
+            },
+          },
+        });
+
+        if (stripeError) throw new Error(stripeError.message);
+        if (paymentIntent.status !== 'succeeded') throw new Error("Payment was not successful.");
+      } else {
+        // If Cash on delivery, no need to confirm Stripe, booking stays 'pending' as requested by user
       }
-    }, 2000);
+
+      setIsSuccess(true);
+    } catch (err) {
+      const errorMessage = err.response?.data?.error || err.message;
+      alert("Transaction Failed: " + errorMessage);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -338,17 +383,19 @@ const Checkout = () => {
                   {formData.payment_method === 'credit_card' && (
                      <div className="ml-7 mt-4 p-6 bg-white border border-[#E5E5E5] shadow-inner space-y-4 relative">
                         <div>
-                           <label className="block text-[11px] uppercase tracking-wider font-bold text-gray-500 mb-2">Card Number</label>
-                           <input type="text" className="w-full border border-[#D9D9D9] p-3 text-sm focus:border-[#A68A57] outline-none font-mono" placeholder="XXXX XXXX XXXX XXXX" />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                           <div>
-                              <label className="block text-[11px] uppercase tracking-wider font-bold text-gray-500 mb-2">Expiry Date</label>
-                              <input type="text" className="w-full border border-[#D9D9D9] p-3 text-sm focus:border-[#A68A57] outline-none font-mono" placeholder="MM / YY" />
-                           </div>
-                           <div>
-                              <label className="block text-[11px] uppercase tracking-wider font-bold text-gray-500 mb-2">CVC</label>
-                              <input type="password" className="w-full border border-[#D9D9D9] p-3 text-sm focus:border-[#A68A57] outline-none font-mono" placeholder="***" />
+                           <label className="block text-[11px] uppercase tracking-wider font-bold text-gray-500 mb-4">Secure Credit Card Transaction</label>
+                           <div className="p-4 border border-[#D9D9D9] bg-white rounded-sm focus-within:border-[#A68A57] transition-colors">
+                              <CardElement options={{
+                                style: {
+                                  base: {
+                                    fontSize: '15px',
+                                    color: '#333',
+                                    '::placeholder': { color: '#aab7c4' },
+                                    fontFamily: 'monospace',
+                                  },
+                                  invalid: { color: '#fa755a' },
+                                }
+                              }} />
                            </div>
                         </div>
                      </div>
@@ -371,7 +418,51 @@ const Checkout = () => {
           </div>
         </form>
       </div>
+
+      {/* PREMIUM SUCCESS MODAL */}
+      {isSuccess && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white max-w-md w-full p-8 text-center shadow-2xl relative animate-in zoom-in-95 duration-300">
+            <div className="w-20 h-20 bg-[#A68A57] rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            
+            <h2 className="text-3xl font-serif font-bold text-[#333] mb-4">Reservations Confirmed</h2>
+            <p className="text-gray-600 mb-8 leading-relaxed">
+              Your luxury stay at <strong>{suite.title}</strong> has been secured! A confirmation receipt has been dispatched to your email and our staff has been notified.
+            </p>
+            
+            <div className="bg-[#FAF9F6] p-4 border border-[#E5E5E5] rounded-sm mb-8 text-left">
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-gray-500 uppercase tracking-wider text-[10px] font-bold">Booking ID</span>
+                <span className="text-[#333] font-mono">#MALON-{Math.floor(Math.random() * 10000)}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-500 uppercase tracking-wider text-[10px] font-bold">Total Charged</span>
+                <span className="text-[#A68A57] font-bold">${finalTotal.toFixed(2)}</span>
+              </div>
+            </div>
+
+            <button 
+              onClick={() => navigate('/')}
+              className="w-full bg-[#A68A57] text-white py-4 uppercase text-sm font-bold tracking-widest hover:bg-[#8e7345] transition-all shadow-lg hover:shadow-xl"
+            >
+              Return Home
+            </button>
+          </div>
+        </div>
+      )}
     </div>
+  )
+}
+
+const Checkout = () => {
+  return (
+    <Elements stripe={stripePromise}>
+      <CheckoutContent />
+    </Elements>
   )
 }
 
