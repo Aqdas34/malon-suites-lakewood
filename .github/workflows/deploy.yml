@@ -12,10 +12,13 @@ jobs:
     steps:
     - name: Deploy Frontend via SSH
       uses: appleboy/ssh-action@master
+      env:
+        SERVER_ENV: ${{ secrets.ENV_FILE }}
       with:
         host: ${{ secrets.VPS_HOST }}
         username: ${{ secrets.VPS_USERNAME }}
         key: ${{ secrets.VPS_SSH_KEY }}
+        envs: SERVER_ENV
         script: |
           # 1. Create Web Directory if missing
           mkdir -p /var/www
@@ -36,7 +39,7 @@ jobs:
           git pull origin main
           
           # 6. Set up the production API route for Nginx
-          echo "VITE_API_BASE_URL=/api" > .env
+          echo "$SERVER_ENV" > .env
           
           # 7. Install node modules and heavily optimize the production build
           npm install
