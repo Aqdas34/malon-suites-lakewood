@@ -110,7 +110,7 @@ const Home = () => {
               className="text-malon-gray/60 text-[15px] leading-loose font-medium"
             >
               Booking your stay at Malon Luxury Suites is effortless. Choose from our three beautifully appointed suites, each designed for comfort, 
-              privacy, and style. Whether it’s a short getaway, a business trip, or a simcha stay, our team is ready to ensure your experience is seamless.
+              privacy, and style. Whether it's a short getaway, a business trip, or a simcha stay, our team is ready to ensure your experience is seamless.
             </motion.p>
           </div>
 

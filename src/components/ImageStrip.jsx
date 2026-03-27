@@ -2,17 +2,14 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const images = [
-  "/assets/images/SEV05322.jpg",
-  "/assets/images/SEV05327.jpg",
-  "/assets/images/SEV05337-1.jpg",
-  "/assets/images/SEV05362.jpg",
-  "/assets/images/SEV05372.jpg",
-  "/assets/images/SEV05377.jpg",
-  "/assets/images/SEV05387.jpg",
-  "/assets/images/Room-4@2x.jpg",
-  "/assets/images/Room-5@2x.jpg",
-  "/assets/images/Room-6@2x.jpg",
-  "/assets/images/Room-7@2x.jpg"
+  "/assets/images/rsw_1280h_854.webp",
+  "/assets/images/rsw_1280h_854-1.webp",
+  "/assets/images/rsw_1280h_854-2.webp",
+  "/assets/images/rsw_1280h_854-3.webp",
+  "/assets/images/rsw_1280h_854-4.webp",
+  "/assets/images/rsw_1280h_854-5.webp",
+  "/assets/images/rsw_1280h_854-6.webp",
+ 
 ];
 
 const ImageStrip = () => {

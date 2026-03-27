@@ -152,7 +152,7 @@ const AboutUs = () => {
                   className="w-full lg:w-2/5"
                >
                   <div className="relative h-full min-h-[600px] overflow-hidden group shadow-2xl rounded-sm">
-                     <img src="/assets/images/ElitePackage.jpg" alt="Dining Features" className="w-full h-full object-cover transition-transform duration-[4s] group-hover:scale-105" />
+                     <img src="/assets/images/ElitePackage.webp" alt="Dining Features" className="w-full h-full object-cover transition-transform duration-[4s] group-hover:scale-105" />
                      <div className="absolute inset-6 border border-white/20 pointer-events-none"></div>
                   </div>
                </motion.div>
