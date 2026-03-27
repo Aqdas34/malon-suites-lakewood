@@ -26,3 +26,6 @@ dist-ssr
 # Assets
 public/assets/images/
 public/assets/images-older/
+
+
+.env
